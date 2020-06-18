@@ -50,12 +50,9 @@ if __name__ == '__main__':
     plot_roc_curves(FICO['rocs'],FICO['aucs'],figsize=(7,5))
     #plt.xlim(0,0.3)
     #plt.ylim(0.4,1)
-    plt.show()
+    #plt.show()
 
-    print(FICO['fpr'])
-    print(FICO['tpr']['Asian'][0.0:101.0])
-
-    print(FICO['rocs']['Asian'])
+    print(FICO['fpr']['Asian'][101.0])
 
     #polygons = [Delaunay(list(zip(fprs, tprs)))
                 #for group, (fprs, tprs, _) in FICO['rocs'].items()]
@@ -65,8 +62,6 @@ if __name__ == '__main__':
     #getting the common x values from FICO['fpr'] let's see how much you get?
 
     intersecting_x_values(FICO)
-
-    print(list(get_fpr_div()))
 
 
 

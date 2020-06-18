@@ -4,7 +4,7 @@ import numpy as np
 
 fpr_df,tpr_df = get_fpr_tpr_scores()
 def get_fpr_eq_div():
-    return np.arange(0.0,1.01,0.01)
+    return np.arange(0.0,1.0,0.01)
 
 def get_data_fpr_list(sens_attr):
     data_fpr = []
@@ -28,16 +28,15 @@ def get_data_threshold_list():
     return threshold
 
 def get_indices_for_fpr(fpr_list,start_fpr_index,end_fpr_index,find_fpr):
-
     #NOTE: fpr_list is in descending order!!!
 
     if(start_fpr_index >= end_fpr_index):
-        return (-1,-1)
+        return None
 
     mid = (start_fpr_index + end_fpr_index) // 2
 
     if(fpr_list[mid] == find_fpr):
-        return(mid,0)
+        return(mid,mid)
     elif mid != 0 and fpr_list[mid - 1] > find_fpr >= fpr_list[mid]:
         return(mid-1, mid)
 
@@ -52,6 +51,22 @@ def get_indices_for_fpr(fpr_list,start_fpr_index,end_fpr_index,find_fpr):
 
     else:
         print('Didnt go through any of the above')
+
+def in_between_tpr(fpr_1,fpr_2,find_fpr,tpr_1,tpr_2):
+    if(fpr_1 == fpr_2):
+        return tpr_1
+    m = (tpr_1 - tpr_2)/(fpr_1-fpr_2)
+    in_bw_tpr = tpr_1 - m * (fpr_1 - find_fpr)
+
+    return in_bw_tpr
+
+def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
+    if(fpr_1 == fpr_2): #this happens when get_indicies_for_fpr returns mid, mid
+        return threshold_1
+    m = (threshold_1 - threshold_2)/(fpr_1-fpr_2)
+    in_bw_threshold = threshold_1 - m * (fpr_1 - find_fpr)
+
+    return in_bw_threshold
 
 def construct_df_for_eq_div_fpr(list_sens_attr,threshold_list):
     eq_div_fpr = get_fpr_eq_div()
@@ -73,6 +88,8 @@ def construct_df_for_eq_div_fpr(list_sens_attr,threshold_list):
             tpr_list = atrr_fpr_tpr_lists[sens_attr][1]
             found_index_1, found_index_2 = get_indices_for_fpr(fpr_list, 0, len(fpr_list), find_fpr)
 
+            #remember descending, so fpr_1 > fpr_2 likewise for tpr
+
             fpr_1 = fpr_list[found_index_1]
             fpr_2 = fpr_list[found_index_2]
 
@@ -84,8 +101,10 @@ def construct_df_for_eq_div_fpr(list_sens_attr,threshold_list):
 
             #TODO: figure out the equation ot find the right threshold and tpr for find_fpr
 
-            find_fpr_row.append(tpr_1)
-            find_fpr_row.append(threshold_1)
+            in_bw_tpr = in_between_tpr(fpr_1,fpr_2,find_fpr,tpr_1,tpr_2)
+            in_bw_threshold = in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2)
+            find_fpr_row.append(in_bw_tpr)
+            find_fpr_row.append(in_bw_threshold)
 
         df_eq_div_fpr.loc[find_fpr,:] = find_fpr_row
 
@@ -110,9 +129,14 @@ if __name__ == '__main__':
     print('fpr_1 ' + str(fpr_1) + ' fpr_2 ' + str(fpr_2) + ' tpr_1 ' + str(tpr_1) + ' tpr_2 ' + str(tpr_2) +
           ' threshold_1 ' + str(threshold_1) + ' threshold_2 ' + str(threshold_2))
 
+    in_bw_tpr = in_between_tpr(fpr_1, fpr_2, 0.8, tpr_1, tpr_2)
+    in_bw_threshold = in_between_threshold(fpr_1, fpr_2, 0.8, threshold_1, threshold_2)
+
+    print('in_nw+tpr ' + str(in_bw_tpr) + ' in_bwthress ' + str(in_bw_threshold))
+
     list_sens_attr = []
     for col in fpr_df.columns:
         list_sens_attr.append(col)
 
     df =  construct_df_for_eq_div_fpr(list_sens_attr,threshold_list)
-    print(df)
+    #print(df)
