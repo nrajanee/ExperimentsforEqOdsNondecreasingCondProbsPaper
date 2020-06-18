@@ -68,10 +68,13 @@ def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
 
     return in_bw_threshold
 
-def construct_df_for_eq_div_fpr(list_sens_attr,threshold_list):
+def construct_df_for_eq_div_fpr():
+    threshold_list = get_data_threshold_list()
     eq_div_fpr = get_fpr_eq_div()
     columns = []
     atrr_fpr_tpr_lists = {}
+    list_sens_attr = fpr_df.columns
+
     for sens_attr in list_sens_attr:
         columns.append(sens_attr+'_tpr')
         columns.append(sens_attr+'_threshold')
@@ -138,5 +141,5 @@ if __name__ == '__main__':
     for col in fpr_df.columns:
         list_sens_attr.append(col)
 
-    df =  construct_df_for_eq_div_fpr(list_sens_attr,threshold_list)
-    #print(df)
+    df =  construct_df_for_eq_div_fpr()
+    print(df)
