@@ -9,9 +9,11 @@ from responsibly.fairness.interventions.threshold import (find_thresholds,
                                                           plot_thresholds)
 from responsibly.dataset import build_FICO_dataset
 from scipy.spatial import Delaunay
+import numpy as np
 
 def get_fpr_tpr_scores():
-    return FICO['rocs']
+    FICO = build_FICO_dataset()
+    return FICO['fpr'],FICO['tpr']
 
 def intersecting_x_values(FICO):
     intersection_point = []
@@ -36,6 +38,9 @@ def intersecting_x_values(FICO):
 
     print(intersection_point)
 
+def get_fpr_for_threshold(threshold):
+    start_threshold = 0.0
+    end_threshold = 101.0
 
 if __name__ == '__main__':
     FICO = build_FICO_dataset()
@@ -43,11 +48,12 @@ if __name__ == '__main__':
     #help(build_FICO_dataset)
 
     plot_roc_curves(FICO['rocs'],FICO['aucs'],figsize=(7,5))
-    plt.xlim(0,0.3)
-    plt.ylim(0.4,1)
-    #plt.show()
+    #plt.xlim(0,0.3)
+    #plt.ylim(0.4,1)
+    plt.show()
 
-    print(FICO['fpr']['Asian'][0.0:101.0])
+    print(FICO['fpr'])
+    print(FICO['tpr']['Asian'][0.0:101.0])
 
     print(FICO['rocs']['Asian'])
 
@@ -60,6 +66,7 @@ if __name__ == '__main__':
 
     intersecting_x_values(FICO)
 
+    print(list(get_fpr_div()))
 
 
 
