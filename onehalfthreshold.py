@@ -26,11 +26,6 @@ def get_optimal_fp_tp():
 
     return (min_loss_fpr,min_loss_tpr)
 
-if __name__ == '__main__':
-   fpr, tpr =  get_optimal_fp_tp()
-   print(fpr)
-   print(tpr)
-
 
 
 
