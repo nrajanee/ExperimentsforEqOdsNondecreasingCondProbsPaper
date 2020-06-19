@@ -1,6 +1,8 @@
 from pointwise_min import construct_df_for_eq_div_fpr
 from pointwise_min import get_fpr_eq_div
 
+
+#make loss function as parameters to function
 def get_optimal_fp_tp():
     eq_fpr_df = construct_df_for_eq_div_fpr()
     drop_thresholds_df = eq_fpr_df.drop(
