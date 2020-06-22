@@ -56,4 +56,15 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     else:
         print('Didnt go through any of the above')
 
+def get_fpa_opt_tpa_opt_thres_a_opt(fp_1,fp_2,tp_1,tp_2,threshold_1, threshold_2,opt_slope):
+    slope_curve = (tp_2-tp_1)/(fp_2-fp_1) #eq_fpr and tpr_a are ascending
+
+    fpa_opt = (tp_2 - slope_curve*fp_2)/(opt_slope-slope_curve)
+    tpa_opt = fpa_opt*opt_slope
+
+    thresh_fp_ratio = (threshold_2-threshold_1)/(fp_2-fp1)
+
+    threshold_a_opt = threshold_2 - thresh_fp_ratio*(fp_2-fpa_opt)
+
+    return(fpa_opt,tpa_opt,threshold_a_opt)
 
