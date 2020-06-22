@@ -28,15 +28,15 @@ def get_optimal_fp_tp():
 
     return (min_loss_fpr,min_loss_tpr)
 
-def get_fpa_opt_tpa_opt(find_slope,eq_fpr_a,tpr_a,start_index,end_index):
+def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     if(start_index >= end_index):
         return None
 
-    mid = (start_fpr_index + end_fpr_index) // 2
+    mid = (start_index + end_index) // 2
 
-    calc_slope_mid = tpr_a[mid]/eq_fpr_a[mid]
-    calc_slope_0 = tpr_a[mid-1]/eq_fpr_a[mid-1]
-    calc_slope_1 = tpr_a[mid+1]/eq_fpr_a[mid+1]
+    calc_slope_mid = tpr_a[mid]/eq_fpr[mid]
+    calc_slope_0 = tpr_a[mid-1]/eq_fpr[mid-1]
+    calc_slope_1 = tpr_a[mid+1]/eq_fpr[mid+1]
 
     if (calc_slope_mid == find_slope):
         return (mid, mid)
@@ -44,18 +44,16 @@ def get_fpa_opt_tpa_opt(find_slope,eq_fpr_a,tpr_a,start_index,end_index):
     elif mid != 0 and calc_slope_0 > find_slope >= calc_slope_mid:
         return (mid - 1, mid)
 
-    elif mid != len(fpr_list) and calc_slope_mid > find_slope > calc_slope_1:
+    elif mid != len(eq_fpr) and calc_slope_mid > find_slope > calc_slope_1:
         return (mid, mid + 1)
 
     elif (calc_slope_mid > find_slope):
-        return get_fpa_opt_tpa_opt(find_slope, eq_for_a, tpr_a,mid+1,end_index)
+        return get_indices_for_a_opt(find_slope, eq_fpr, tpr_a,mid+1,end_index)
 
-    elif (fpr_list[mid] < find_fpr):
-        return get_fpa_opt_tpa_opt(find_slope, eq_for_a, tpr_a,start_index,mid-1)
+    elif (calc_slope_mid < find_slope):
+        return get_indices_for_a_opt(find_slope, eq_fpr, tpr_a,start_index,mid-1)
 
     else:
         print('Didnt go through any of the above')
-
-
 
 
