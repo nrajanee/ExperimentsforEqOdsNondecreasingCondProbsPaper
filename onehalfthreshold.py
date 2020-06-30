@@ -2,8 +2,7 @@ from pointwise_min import construct_df_for_eq_div_fpr
 from pointwise_min import get_fpr_eq_div
 import numpy as np
 
-#make loss function as parameters to function
-def get_optimal_fp_tp():
+def get_optimal_fp_tp(loss_fn,loss_fp):
     eq_fpr_df = construct_df_for_eq_div_fpr()
     drop_thresholds_df = eq_fpr_df.drop(
         columns=['Asian_threshold', 'Black_threshold', 'Hispanic_threshold', 'White_threshold'])
@@ -76,9 +75,10 @@ def equalized_odds_classifer(score,attr,ta_dict,pa_dict):
     p_a = pa_dict[attr]
 
     s = np.random.binomial(1,p_a) #n=1
+
     if(s == 0): #w 1-pa
         return 0
-    elif(score >= t_a): #w p_a
+    elif(score >= t_a): #w p_a s = 1
         return 1
     else: #w p_a
         return 0
