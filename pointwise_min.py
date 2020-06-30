@@ -30,17 +30,17 @@ def get_data_threshold_list():
 def get_indices_for_fpr(fpr_list,start_fpr_index,end_fpr_index,find_fpr):
     #NOTE: fpr_list is in descending order!!!
 
-    if(start_fpr_index >= end_fpr_index):
+    if(start_fpr_index > end_fpr_index):
         return None
 
     mid = (start_fpr_index + end_fpr_index) // 2
 
     if(fpr_list[mid] == find_fpr):
         return(mid,mid)
-    elif mid != 0 and fpr_list[mid - 1] > find_fpr >= fpr_list[mid]:
+    elif mid != 0 and fpr_list[mid - 1] >= find_fpr > fpr_list[mid]: #if you do less than or equal to you'll cut binary search faster
         return(mid-1, mid)
 
-    elif mid != len(fpr_list) and fpr_list[mid] > find_fpr > fpr_list[mid+1]:
+    elif mid != len(fpr_list) and fpr_list[mid] > find_fpr >= fpr_list[mid+1]:
         return(mid,mid+1)
 
     elif(fpr_list[mid] > find_fpr):

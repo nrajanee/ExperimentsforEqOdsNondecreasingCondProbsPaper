@@ -9,8 +9,6 @@ def get_optimal_fp_tp(loss_fn,loss_fp):
     pointwise_min_df = drop_thresholds_df.min(axis=1)
     eq_fpr = list(get_fpr_eq_div())
     pointwise_min_tpr = list(pointwise_min_df)
-    loss_fn = 0.3 #cost of a non-defaulter not getting a loan
-    loss_fp = 0.2 #cost of a defaulter getting a loan
 
     min_loss = float('inf')
     min_loss_fpr = None
@@ -28,7 +26,7 @@ def get_optimal_fp_tp(loss_fn,loss_fp):
     return (min_loss_fpr,min_loss_tpr)
 
 def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
-    if(start_index >= end_index):
+    if(start_index > end_index):
         return None
 
     mid = (start_index + end_index) // 2
@@ -40,10 +38,10 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     if (calc_slope_mid == find_slope):
         return (mid, mid)
 
-    elif mid != 0 and calc_slope_0 > find_slope >= calc_slope_mid:
+    elif mid != 0 and calc_slope_0 >= find_slope > calc_slope_mid:
         return (mid - 1, mid)
 
-    elif mid != len(eq_fpr) and calc_slope_mid > find_slope > calc_slope_1:
+    elif mid != len(eq_fpr) and calc_slope_mid > find_slope >= calc_slope_1:
         return (mid, mid + 1)
 
     elif (calc_slope_mid > find_slope):
