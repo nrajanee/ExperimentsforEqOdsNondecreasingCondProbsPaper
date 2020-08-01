@@ -1,4 +1,4 @@
-from get_data import get_fpr_tpr_scores
+from get_data_fico import get_fpr_tpr_scores
 import pandas as pd
 import numpy as np
 
