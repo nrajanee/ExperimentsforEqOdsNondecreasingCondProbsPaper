@@ -112,34 +112,3 @@ def construct_df_for_eq_div_fpr():
         df_eq_div_fpr.loc[find_fpr,:] = find_fpr_row
 
     return df_eq_div_fpr
-
-if __name__ == '__main__':
-    # NOTE: fpr_list is in descending order!!!
-    fpr_list = get_data_fpr_list('Asian')
-    found_index_1, found_index_2 = get_indices_for_fpr(fpr_list,0,len(fpr_list),0.8)
-
-    fpr_1 = fpr_list[found_index_1]
-    fpr_2 = fpr_list[found_index_2]
-
-    threshold_list = get_data_threshold_list()
-    threshold_1 = threshold_list[found_index_1]
-    threshold_2 = threshold_list[found_index_2]
-
-    tpr_list = get_data_tpr_list('Asian')
-    tpr_1 = tpr_list[found_index_1]
-    tpr_2 = tpr_list[found_index_2]
-
-    print('fpr_1 ' + str(fpr_1) + ' fpr_2 ' + str(fpr_2) + ' tpr_1 ' + str(tpr_1) + ' tpr_2 ' + str(tpr_2) +
-          ' threshold_1 ' + str(threshold_1) + ' threshold_2 ' + str(threshold_2))
-
-    in_bw_tpr = in_between_tpr(fpr_1, fpr_2, 0.8, tpr_1, tpr_2)
-    in_bw_threshold = in_between_threshold(fpr_1, fpr_2, 0.8, threshold_1, threshold_2)
-
-    print('in_nw+tpr ' + str(in_bw_tpr) + ' in_bwthress ' + str(in_bw_threshold))
-
-    list_sens_attr = []
-    for col in fpr_df.columns:
-        list_sens_attr.append(col)
-
-    df =  construct_df_for_eq_div_fpr()
-    print(df)
