@@ -70,7 +70,7 @@ def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
 
 def construct_df_for_eq_div_fpr():
     threshold_list = get_data_threshold_list()
-    eq_div_fpr = get_fpr_eq_div()
+    eq_div_fpr = list(get_fpr_eq_div())
     columns = []
     atrr_fpr_tpr_lists = {}
     list_sens_attr = fpr_df.columns
