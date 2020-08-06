@@ -11,7 +11,7 @@ from responsibly.dataset import build_FICO_dataset
 from scipy.spatial import Delaunay
 import numpy as np
 
-def get_fpr_tpr_scores():
+def get_fpr_tpr_fico():
     FICO = build_FICO_dataset()
     return FICO['fpr'],FICO['tpr']
 

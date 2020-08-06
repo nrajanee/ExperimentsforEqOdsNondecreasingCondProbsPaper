@@ -1,26 +1,27 @@
-from get_data_fico import get_fpr_tpr_scores
+from get_data_fico import get_fpr_tpr_fico
+from get_data_compas import get_recid_compas_df
+from get_data_compas import get_compas_fpr_tpr
 import pandas as pd
 import numpy as np
 
-fpr_df,tpr_df = get_fpr_tpr_scores()
 def get_fpr_eq_div():
     return np.arange(0.0,1.0,0.01)
 
-def get_data_fpr_list(sens_attr):
+def get_data_fpr_list(sens_attr,fpr_df):
     data_fpr = []
     for index,row in fpr_df.iterrows():
         data_fpr.append(row[sens_attr])
     return data_fpr
 
 
-def get_data_tpr_list(sens_attr):
+def get_data_tpr_list(sens_attr,tpr_df):
     data_tpr = []
     for index,row in tpr_df.iterrows():
         data_tpr.append(row[sens_attr])
     return data_tpr
 
 
-def get_data_threshold_list():
+def get_data_threshold_list(fpr_df):
     threshold = []
     for index,row in fpr_df.iterrows():
         threshold.append(index)
@@ -68,8 +69,18 @@ def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
 
     return in_bw_threshold
 
-def construct_df_for_eq_div_fpr():
-    threshold_list = get_data_threshold_list()
+def construct_df_for_eq_div_fpr(data_name):
+    if data_name == 'fico':
+        fpr_df, tpr_df = get_fpr_tpr_fico()
+    elif data_name == 'compas':
+        recid_df_w_b = get_recid_compas_df()
+        fpr_df,tpr_df = get_compas_fpr_tpr(recid_df_w_b)
+    else:
+        fpr_df = None
+        tpr_df = None
+        print('provide the correct dataset name')
+        exit(-1)
+    threshold_list = get_data_threshold_list(fpr_df)
     eq_div_fpr = list(get_fpr_eq_div())
     columns = []
     atrr_fpr_tpr_lists = {}
@@ -78,8 +89,8 @@ def construct_df_for_eq_div_fpr():
     for sens_attr in list_sens_attr:
         columns.append(sens_attr+'_tpr')
         columns.append(sens_attr+'_threshold')
-        fpr_list_attr = get_data_fpr_list(sens_attr)
-        tpr_list_attr = get_data_tpr_list(sens_attr)
+        fpr_list_attr = get_data_fpr_list(sens_attr,fpr_df)
+        tpr_list_attr = get_data_tpr_list(sens_attr,tpr_df)
         atrr_fpr_tpr_lists[sens_attr] = (fpr_list_attr,tpr_list_attr)
 
     df_eq_div_fpr = pd.DataFrame(columns=columns,index=eq_div_fpr)

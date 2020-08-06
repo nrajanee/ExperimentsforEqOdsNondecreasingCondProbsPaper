@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pylab as plt
+import numpy as np
 
 def get_recid_compas_df():
     entire_df = pd.read_csv("compas-scores-two-years.csv")
@@ -8,11 +9,13 @@ def get_recid_compas_df():
 
     return recid_df_w_b
 
-def get_fpr_tpr(recid_df_w_b):
+def get_compas_fpr_tpr(recid_df_w_b):
+    decile_thres_range = list(np.arange(1,10.1,0.1))
 
-    thres_fpr_tpr = pd.DataFrame(columns = ['threshold','fpr_Black','tpr_Black','fpr_White','tpr_White'])
+    fpr_df = pd.DataFrame(columns = ['Black','White'],index = decile_thres_range)
+    tpr_df = pd.DataFrame(columns = ['Black','White'],index = decile_thres_range)
 
-    for decile_score in range(1,11):
+    for decile_score in decile_thres_range:
         true_pos_c_b = 0
         false_pos_c_b = 0
         true_pos_c_w = 0
@@ -48,8 +51,15 @@ def get_fpr_tpr(recid_df_w_b):
         false_pos_b = false_pos_c_b/(total_b_neg)
         true_pos_w = true_pos_c_w/(total_w_pos)
         false_pos_w =  false_pos_c_w/(total_w_neg)
-        thres_fpr_tpr = thres_fpr_tpr.append({'threshold': decile_score,'fpr_Black':false_pos_b,'tpr_Black':true_pos_b,'fpr_White':false_pos_w,'tpr_White': true_pos_w},ignore_index=True)
-    print(thres_fpr_tpr)
-    return thres_fpr_tpr
+        row_fpr = []
+        row_fpr.append(false_pos_b)
+        row_fpr.append(false_pos_w)
+        row_tpr = []
+        row_tpr.append(true_pos_b)
+        row_tpr.append(true_pos_w)
+        fpr_df.loc[decile_score,:]= row_fpr
+        tpr_df.loc[decile_score,:] = row_tpr
+
+    return fpr_df,tpr_df
 
 
