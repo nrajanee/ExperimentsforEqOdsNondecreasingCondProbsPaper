@@ -1,9 +1,6 @@
-from construct_eq_fpr_df import construct_df_for_eq_div_fpr
-from construct_eq_fpr_df import get_fpr_eq_div
 import numpy as np
 
-def get_optimal_fp_tp(loss_fn,loss_fp,pointwise_min_df):
-    eq_fpr = list(get_fpr_eq_div())
+def get_optimal_fp_tp(loss_fn,loss_fp,pointwise_min_df,eq_fpr):
     pointwise_min_tpr = list(pointwise_min_df)
 
     min_loss = float('inf')
