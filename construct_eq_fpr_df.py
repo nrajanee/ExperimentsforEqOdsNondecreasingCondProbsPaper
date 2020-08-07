@@ -1,11 +1,8 @@
-from get_data_fico import get_fpr_tpr_fico
-from get_data_compas import get_recid_compas_df
-from get_data_compas import get_compas_fpr_tpr
 import pandas as pd
 import numpy as np
 
 def get_fpr_eq_div():
-    return np.arange(0.0,1.0,0.01)
+    return np.arange(0.0,1.0,0.01) #ended before you hit 1 because at threshold 0 it's almost 1 (0.99994) for fpr_list fico
 
 def get_data_fpr_list(sens_attr,fpr_df):
     data_fpr = []
@@ -32,16 +29,16 @@ def get_indices_for_fpr(fpr_list,start_fpr_index,end_fpr_index,find_fpr):
     #NOTE: fpr_list is in descending order!!!
 
     if(start_fpr_index > end_fpr_index):
+        print('couldn\'t find find_fpr')
         return None
 
     mid = (start_fpr_index + end_fpr_index) // 2
-
     if(fpr_list[mid] == find_fpr):
         return(mid,mid)
-    elif mid != 0 and fpr_list[mid - 1] >= find_fpr > fpr_list[mid]: #if you do less than or equal to you'll cut binary search faster
+    elif mid > 0 and fpr_list[mid - 1] > find_fpr > fpr_list[mid]:
         return(mid-1, mid)
 
-    elif mid != len(fpr_list) and fpr_list[mid] > find_fpr >= fpr_list[mid+1]:
+    elif mid < (len(fpr_list) - 1) and fpr_list[mid] > find_fpr > fpr_list[mid+1]:
         return(mid,mid+1)
 
     elif(fpr_list[mid] > find_fpr):
@@ -69,23 +66,13 @@ def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
 
     return in_bw_threshold
 
-def construct_df_for_eq_div_fpr(data_name):
-    if data_name == 'fico':
-        fpr_df, tpr_df = get_fpr_tpr_fico()
-    elif data_name == 'compas':
-        recid_df_w_b = get_recid_compas_df()
-        fpr_df,tpr_df = get_compas_fpr_tpr(recid_df_w_b)
-    else:
-        fpr_df = None
-        tpr_df = None
-        print('provide the correct dataset name')
-        exit(-1)
+def construct_df_for_eq_div_fpr(fpr_df,tpr_df):
     threshold_list = get_data_threshold_list(fpr_df)
     eq_div_fpr = list(get_fpr_eq_div())
     columns = []
     atrr_fpr_tpr_lists = {}
     list_sens_attr = fpr_df.columns
-
+    print(list_sens_attr)
     for sens_attr in list_sens_attr:
         columns.append(sens_attr+'_tpr')
         columns.append(sens_attr+'_threshold')
@@ -100,7 +87,7 @@ def construct_df_for_eq_div_fpr(data_name):
         for sens_attr in list_sens_attr:
             fpr_list = atrr_fpr_tpr_lists[sens_attr][0]
             tpr_list = atrr_fpr_tpr_lists[sens_attr][1]
-            found_index_1, found_index_2 = get_indices_for_fpr(fpr_list, 0, len(fpr_list), find_fpr)
+            found_index_1, found_index_2 = get_indices_for_fpr(fpr_list, 0, len(fpr_list) - 1, find_fpr)
 
             #remember descending, so fpr_1 > fpr_2 likewise for tpr
 

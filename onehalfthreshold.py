@@ -1,12 +1,8 @@
-from pointwise_min import construct_df_for_eq_div_fpr
-from pointwise_min import get_fpr_eq_div
+from construct_eq_fpr_df import construct_df_for_eq_div_fpr
+from construct_eq_fpr_df import get_fpr_eq_div
 import numpy as np
 
-def get_optimal_fp_tp(loss_fn,loss_fp):
-    eq_fpr_df = construct_df_for_eq_div_fpr()
-    drop_thresholds_df = eq_fpr_df.drop(
-        columns=['Asian_threshold', 'Black_threshold', 'Hispanic_threshold', 'White_threshold'])
-    pointwise_min_df = drop_thresholds_df.min(axis=1)
+def get_optimal_fp_tp(loss_fn,loss_fp,pointwise_min_df):
     eq_fpr = list(get_fpr_eq_div())
     pointwise_min_tpr = list(pointwise_min_df)
 
@@ -30,7 +26,6 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
         return None
 
     mid = (start_index + end_index) // 2
-
     calc_slope_mid = tpr_a[mid]/eq_fpr[mid]
     calc_slope_0 = tpr_a[mid-1]/eq_fpr[mid-1]
     calc_slope_1 = tpr_a[mid+1]/eq_fpr[mid+1]
@@ -38,10 +33,10 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     if (calc_slope_mid == find_slope):
         return (mid, mid)
 
-    elif mid != 0 and calc_slope_0 >= find_slope > calc_slope_mid:
+    elif mid > 0 and calc_slope_0 > find_slope > calc_slope_mid:
         return (mid - 1, mid)
 
-    elif mid != len(eq_fpr) and calc_slope_mid > find_slope >= calc_slope_1:
+    elif mid < (len(eq_fpr) - 1) and calc_slope_mid > find_slope > calc_slope_1:
         return (mid, mid + 1)
 
     elif (calc_slope_mid > find_slope):

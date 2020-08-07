@@ -10,7 +10,7 @@ def get_recid_compas_df():
     return recid_df_w_b
 
 def get_compas_fpr_tpr(recid_df_w_b):
-    decile_thres_range = list(np.arange(1,10.1,0.1))
+    decile_thres_range = range(1,12) #at the 11th score everything will have 0 fp and 0 tp because you're doing >= decile_score
 
     fpr_df = pd.DataFrame(columns = ['Black','White'],index = decile_thres_range)
     tpr_df = pd.DataFrame(columns = ['Black','White'],index = decile_thres_range)
@@ -57,7 +57,7 @@ def get_compas_fpr_tpr(recid_df_w_b):
         row_tpr = []
         row_tpr.append(true_pos_b)
         row_tpr.append(true_pos_w)
-        fpr_df.loc[decile_score,:]= row_fpr
+        fpr_df.loc[decile_score,:] = row_fpr
         tpr_df.loc[decile_score,:] = row_tpr
 
     return fpr_df,tpr_df
