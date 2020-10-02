@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-def get_fpr_eq_div():
-    return np.arange(0.0,1.0,0.01) #ended before you hit 1 because at threshold 0 it's almost 1 (0.99994) for fpr_list fico
+def get_fpr_eq_div(division=0.01):
+    return np.arange(0.0,1.0,division) #ended before you hit 1 because at threshold 0 it's almost 1 (0.99994) so you won't find exactly 1
 
 def get_data_fpr_list(sens_attr,fpr_df):
     data_fpr = []
@@ -66,9 +66,9 @@ def in_between_threshold(fpr_1,fpr_2,find_fpr,threshold_1,threshold_2):
 
     return in_bw_threshold
 
-def construct_df_for_eq_div_fpr(fpr_df,tpr_df):
+def construct_df_for_eq_div_fpr(fpr_df,tpr_df,division=0.01):
     threshold_list = get_data_threshold_list(fpr_df)
-    eq_div_fpr = list(get_fpr_eq_div())
+    eq_div_fpr = list(get_fpr_eq_div(division))
     columns = []
     atrr_fpr_tpr_lists = {}
     list_sens_attr = fpr_df.columns

@@ -11,9 +11,15 @@ from responsibly.dataset import build_FICO_dataset
 from scipy.spatial import Delaunay
 import numpy as np
 
+FICO = build_FICO_dataset()
 def get_fpr_tpr_fico():
-    FICO = build_FICO_dataset()
     return FICO['fpr'],FICO['tpr']
+
+def get_base_rates():
+    return FICO['base_rates']
+
+def get_totals():
+    return FICO['totals']
 
 def intersecting_x_values(FICO):
     intersection_point = []

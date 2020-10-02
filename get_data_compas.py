@@ -9,6 +9,28 @@ def get_recid_compas_df():
 
     return recid_df_w_b
 
+def get_totals_and_fraction_recidivists(recid_df_w_b):
+    total_b = 0.0
+    total_w = 0.0
+    recid_b = 0.0
+    recid_w = 0.0
+    for index, df_row in recid_df_w_b.iterrows():
+        if df_row['race'] == 'African-American':
+            total_b += 1
+            if df_row['is_recid'] == 1:
+                recid_b += 1
+        if df_row['race'] == 'Caucasian':
+            total_w += 1
+            if df_row['is_recid'] == 1:
+                recid_w += 1
+    f_rec = pd.Series([recid_b/total_b,recid_w/total_w],index=['Black','White'])
+
+    totals = {'Black': total_b, 'White': total_w}
+
+    return f_rec,totals
+
+
+
 def get_compas_fpr_tpr(recid_df_w_b):
     decile_thres_range = range(1,12) #at the 11th score everything will have 0 fp and 0 tp because you're doing >= decile_score
 
