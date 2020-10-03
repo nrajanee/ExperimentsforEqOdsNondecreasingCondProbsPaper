@@ -4,3 +4,4 @@ __pycache__/
 .ipynb_checkpoints
 compas-scores-two-years.csv
 fairmlbook/
+.DS_Store
