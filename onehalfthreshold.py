@@ -52,7 +52,10 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     mid = (start_index + end_index) // 2
     calc_slope_mid = tpr_a[mid]/eq_fpr[mid]
     calc_slope_0 = tpr_a[mid-1]/eq_fpr[mid-1]
-    calc_slope_1 = tpr_a[mid+1]/eq_fpr[mid+1]
+    calc_slope_1 = None
+
+    if (mid < len(eq_fpr) - 1):
+        calc_slope_1 = tpr_a[mid+1]/eq_fpr[mid+1]
 
     if (calc_slope_mid == find_slope):
         return (mid, mid)
@@ -64,9 +67,14 @@ def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
         return (mid, mid + 1)
 
     elif (calc_slope_mid > find_slope):
+        # if find_slope is smaller than the smallest slope in data then just return the smallest and this happens when:
+        if (mid >= len(eq_fpr) - 1):
+            return (mid, mid)
         return get_indices_for_a_opt(find_slope, eq_fpr, tpr_a,mid+1,end_index)
 
     elif (calc_slope_mid < find_slope):
+        if (mid <= 0): # if find_slope is larger than the largest slope in data then just return the largest and this happens when:
+             return (mid, mid)
         return get_indices_for_a_opt(find_slope, eq_fpr, tpr_a,start_index,mid-1)
 
     else:
