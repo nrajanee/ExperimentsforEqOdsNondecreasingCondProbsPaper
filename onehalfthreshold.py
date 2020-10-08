@@ -21,29 +21,30 @@ def get_optimal_fp_tp(loss_fn,loss_fp,pointwise_min_df,eq_fpr):
 def get_optimal_fp_tp_hardtf(totals,fraction_positives, target_rate,pointwise_min_df,eq_fpr):
     pointwise_min_tpr = list(pointwise_min_df)
 
-    max_profit = float('-inf')
-    max_profit_fpr = None
-    max_profit_tpr = None
+    min_loss = float('inf')
+    min_loss_fpr = None
+    min_loss_tpr = None
 
     for index in range(0, len(eq_fpr)):
         fpr = eq_fpr[index]
         tpr = pointwise_min_tpr[index]
-        function_profit = calc_hardt_profit_function(totals, fraction_positives,target_rate,tpr,fpr)
-        if (function_profit > max_profit):
-            max_profit = function_profit
-            max_profit_fpr = fpr
-            max_profit_tpr = tpr
-
-    return (max_profit,max_profit_fpr, max_profit_tpr)
+        function_loss = calc_hardt_profit_function(totals, fraction_positives,target_rate,tpr,fpr)
+        if (function_loss < min_loss):
+            min_loss = function_loss
+            min_loss_fpr = fpr
+            min_loss_tpr = tpr
+    return (min_loss,min_loss_fpr, min_loss_tpr)
 
 def calc_hardt_profit_function(totals,fraction_positives,target_rate,tpr,fpr):
-    losses = (1 - fraction_positives)*fpr*target_rate
-    gains = fraction_positives*tpr*(1-target_rate)
-    diff = gains - losses
-    profit = 0
+    loss_fp = (1 - fraction_positives)*fpr*target_rate
+    fnr = 1 - tpr
+    loss_fn = fraction_positives*(fnr)*(1-target_rate)
+    loss_fp_fn = loss_fp + loss_fn
+    loss = 0
     for k,v in totals.items():
-        profit += diff[k]*v
-    return profit
+        loss += loss_fp_fn[k]*v
+
+    return loss
 
 def get_indices_for_a_opt(find_slope,eq_fpr,tpr_a,start_index,end_index):
     if(start_index > end_index):
